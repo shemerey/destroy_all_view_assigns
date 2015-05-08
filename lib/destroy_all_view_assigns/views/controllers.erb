@@ -1,0 +1,18 @@
+<div class="panel panel-default">
+  <!-- Default panel contents -->
+  <div class="panel-heading">Panel heading</div>
+
+  <!-- Table -->
+  <table class="table">
+    <tr>
+      <th>Controller</th>
+      <th>Instance Variables</th>
+    </td>
+    <% DestroyAllViewAssigns::DataPresenter.new.controllers.each do |controller| %>
+    <tr>
+      <td><%= controller[:klass] %></td>
+      <td><%= controller[:vars].count %></td>
+    </td>
+    <% end%>
+  </table>
+</div>
