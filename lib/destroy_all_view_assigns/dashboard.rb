@@ -4,6 +4,12 @@ require_relative "abstract_controller_rendering"
 module DestroyAllViewAssigns
   class Dashboard < Sinatra::Base
 
+    helpers do
+      def active_tab?(url)
+        url == request.path_info
+      end
+    end
+
     set :public_folder, File.dirname(__FILE__) + '/static'
 
     get "/" do

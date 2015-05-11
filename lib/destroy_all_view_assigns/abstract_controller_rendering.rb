@@ -1,7 +1,8 @@
 require 'pstore'
 
 module DestroyAllViewAssigns
-  CollectedData = PStore.new("assigns.pstore")
+  # CollectedData = PStore.new("assigns.pstore")
+  CollectedData = PStore.new("/Users/zork/Projects/fat_free_crm/assigns.pstore")
 end
 
 module DestroyAllViewAssigns

@@ -1,18 +1,71 @@
+
+<div class="page-header">
+  <h1>@data = Controllers.all.each { |contr ....</h1>
+</div>
+
+<div id="container" style="margin-bottom:70px;"></div>
+<script type='text/javascript'>
+  $(function () {
+    // Set up the chart
+    var chart = new Highcharts.Chart({
+      chart: {
+        renderTo: 'container',
+        type: 'column',
+        margin: 62,
+        options3d: {
+          enabled: true,
+          alpha: 15,
+          beta: 15,
+          depth: 50,
+          viewDistance: 25
+        }
+      },
+      yAxis: {
+        title: {
+          text: null
+        }
+      },
+      legend: {
+        enabled: false
+      },
+      title: {
+        text: 'Instance variables per controller'
+      },
+      subtitle: {
+        text: 'from highest to lowest'
+      },
+      plotOptions: {
+        column: {
+          depth: 25
+        }
+      },
+      series: [{
+        name: 'Variables Per controller',
+        data: [
+          <% DestroyAllViewAssigns::DataPresenter.new.controllers.each do |controller| %>
+            ['<%= controller[:klass] %>', <%= controller[:vars].count %>],
+          <% end %>
+        ]
+      }]
+    });
+  });
+</script>
+
 <div class="panel panel-default">
   <!-- Default panel contents -->
-  <div class="panel-heading">Panel heading</div>
+  <div class="panel-heading">List of controllers</div>
 
   <!-- Table -->
   <table class="table">
     <tr>
       <th>Controller</th>
       <th>Instance Variables</th>
-    </td>
-    <% DestroyAllViewAssigns::DataPresenter.new.controllers.each do |controller| %>
-    <tr>
-      <td><%= controller[:klass] %></td>
-      <td><%= controller[:vars].count %></td>
-    </td>
-    <% end%>
+      </td>
+      <% DestroyAllViewAssigns::DataPresenter.new.controllers.each do |controller| %>
+        <tr>
+          <td><%= controller[:klass] %></td>
+          <td><%= controller[:vars].count %></td>
+          </td>
+        <% end%>
   </table>
 </div>
