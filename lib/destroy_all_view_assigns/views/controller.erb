@@ -4,50 +4,62 @@
 
 <div id="container" style="margin-bottom:70px;"></div>
 <script type='text/javascript'>
-  $(function () {
-    // Set up the chart
-    var chart = new Highcharts.Chart({
-      chart: {
-        renderTo: 'container',
-        type: 'column',
-        margin: 62,
-        options3d: {
-          enabled: true,
-          alpha: 15,
-          beta: 15,
-          depth: 50,
-          viewDistance: 25
-        }
-      },
-      yAxis: {
+$(function () {
+    $('#container').highcharts({
+        chart: {
+            zoomType: 'xy'
+        },
         title: {
-          text: null
+            text: 'Instance variables per action'
+        },
+        xAxis: [{
+          labels: {
+            enabled: false
+          },
+          categories: [<%= controller[:actions].map { |name, acion| "'" + name + "'" }.join(', ') %>],
+        }],
+        yAxis: [{ // Primary yAxis
+            labels: {
+                style: {
+                    color: Highcharts.getOptions().colors[1]
+                }
+            },
+            title: {
+                text: 'Variables per action',
+                style: {
+                    color: Highcharts.getOptions().colors[1]
+                }
+            }
+        }],
+        tooltip: {
+            shared: true
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'left',
+            x: 50,
+            verticalAlign: 'top',
+            y: 50,
+            floating: true,
+            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+        },
+        series: [{
+            name: 'Variables',
+            type: 'column',
+            data:[<%= controller[:actions].map { |name, action| action[:vars].count}.join(', ') %>]
         }
-      },
-      legend: {
-        enabled: false
-      },
-      title: {
-        text: null
-      },
-      subtitle: {
-        text: 'Instance variables per action'
-      },
-      plotOptions: {
-        column: {
-          depth: 25
-        }
-      },
-      series: [{
-        name: 'Variables Per action',
-        data: [
-          <% controller[:actions].each do |name, data| %>
-            ['<%= name %>', <%= data[:vars].count %>],
-          <% end %>
+        // , {
+        //     name: 'Actions',
+        //     type: 'spline',
+        //     data:[<%= DestroyAllViewAssigns::DataPresenter.new.controllers.map { |controller| controller[:actions].count }.join(', ') %>]
+        // }
         ]
-      }]
     });
-  });
+});
+
+
+
+
 </script>
 
 <div class="panel panel-default">

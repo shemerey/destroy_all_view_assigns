@@ -5,50 +5,69 @@
 
 <div id="container" style="margin-bottom:70px;"></div>
 <script type='text/javascript'>
-  $(function () {
-    // Set up the chart
-    var chart = new Highcharts.Chart({
-      chart: {
-        renderTo: 'container',
-        type: 'column',
-        margin: 62,
-        options3d: {
-          enabled: true,
-          alpha: 15,
-          beta: 15,
-          depth: 50,
-          viewDistance: 25
-        }
-      },
-      yAxis: {
+$(function () {
+    $('#container').highcharts({
+        chart: {
+            zoomType: 'xy'
+        },
         title: {
-          text: null
-        }
-      },
-      legend: {
-        enabled: false
-      },
-      title: {
-        text: null
-      },
-      subtitle: {
-        text: 'from highest to lowest'
-      },
-      plotOptions: {
-        column: {
-          depth: 25
-        }
-      },
-      series: [{
-        name: 'Variables Per controller',
-        data: [
-          <% DestroyAllViewAssigns::DataPresenter.new.controllers.each do |controller| %>
-            ['<%= controller[:klass] %>', <%= controller[:vars].count %>],
-          <% end %>
-        ]
-      }]
+            text: 'Instance variables per controller vs actions per controller'
+        },
+        xAxis: [{
+          labels: {
+            enabled: false
+          },
+          categories: [<%= DestroyAllViewAssigns::DataPresenter.new.controllers.map { |controller| "'" + controller[:klass] + "'" }.join(', ') %>],
+        }],
+        yAxis: [{ // Primary yAxis
+            labels: {
+                style: {
+                    color: Highcharts.getOptions().colors[1]
+                }
+            },
+            title: {
+                text: 'Actions per controller',
+                style: {
+                    color: Highcharts.getOptions().colors[1]
+                }
+            }
+        }, { // Secondary yAxis
+            title: {
+                text: 'Variables per controller',
+                style: {
+                    color: Highcharts.getOptions().colors[0]
+                }
+            },
+            labels: {
+                style: {
+                    color: Highcharts.getOptions().colors[0]
+                }
+            },
+            opposite: true
+        }],
+        tooltip: {
+            shared: true
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'left',
+            x: 50,
+            verticalAlign: 'top',
+            y: 50,
+            floating: true,
+            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+        },
+        series: [{
+            name: 'Variables',
+            type: 'column',
+            data:[<%= DestroyAllViewAssigns::DataPresenter.new.controllers.map { |controller| controller[:vars].count}.join(', ') %>]
+        }, {
+            name: 'Actions',
+            type: 'spline',
+            data:[<%= DestroyAllViewAssigns::DataPresenter.new.controllers.map { |controller| controller[:actions].count }.join(', ') %>]
+        }]
     });
-  });
+});
 </script>
 
 <div class="panel panel-default">
