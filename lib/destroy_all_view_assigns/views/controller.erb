@@ -1,6 +1,5 @@
-
 <div class="page-header">
-  <h1>All Controllers <small>variables per controller</small></h1>
+<h1><%= controller[:klass] %> <small>variables per action</small></h1>
 </div>
 
 <div id="container" style="margin-bottom:70px;"></div>
@@ -32,7 +31,7 @@
         text: null
       },
       subtitle: {
-        text: 'from highest to lowest'
+        text: 'Instance variables per action'
       },
       plotOptions: {
         column: {
@@ -40,10 +39,10 @@
         }
       },
       series: [{
-        name: 'Variables Per controller',
+        name: 'Variables Per action',
         data: [
-          <% DestroyAllViewAssigns::DataPresenter.new.controllers.each do |controller| %>
-            ['<%= controller[:klass] %>', <%= controller[:vars].count %>],
+          <% controller[:actions].each do |name, data| %>
+            ['<%= name %>', <%= data[:vars].count %>],
           <% end %>
         ]
       }]
@@ -53,18 +52,18 @@
 
 <div class="panel panel-default">
   <!-- Default panel contents -->
-  <div class="panel-heading">List of <strong>#controllers</strong> sorted by instance variable count from highest to lowest</div>
+  <div class="panel-heading">List of <strong>#actions</strong> sorted by instance variable count from highest to lowest</div>
 
   <!-- Table -->
   <table class="table">
     <tr>
-      <th>Controller</th>
+      <th>Action</th>
       <th>Instance Variables count</th>
       </td>
-      <% DestroyAllViewAssigns::DataPresenter.new.controllers.each do |controller| %>
+      <% controller[:actions].sort_by{|name, data| -data[:vars].count }.each do |name, data| %>
         <tr>
-          <td><%= controller_url(controller) %></td>
-          <td><%= controller[:vars].count %></td>
+          <td ><span style="color:gray;"><%= controller[:klass] %></span>#<strong><%= name %><strong></td>
+          <td><%= data[:vars].count %></td>
           </td>
         <% end%>
   </table>

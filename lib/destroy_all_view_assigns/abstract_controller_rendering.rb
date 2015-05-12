@@ -13,6 +13,12 @@ module DestroyAllViewAssigns
       @data = data
     end
 
+    def find_controller_by_name(name)
+      data.transaction do
+        data.fetch(name) { raise Sinatra::NotFound }
+      end
+    end
+
     def controllers
       data.transaction do
         data.roots.map do |controller|
