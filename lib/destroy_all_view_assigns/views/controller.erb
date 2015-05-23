@@ -1,0 +1,82 @@
+<div class="page-header">
+<h1><%= controller[:klass] %> <small>variables per action</small></h1>
+</div>
+
+<div id="container" style="margin-bottom:70px;"></div>
+<script type='text/javascript'>
+$(function () {
+    $('#container').highcharts({
+        chart: {
+            zoomType: 'xy'
+        },
+        title: {
+            text: 'Instance variables per action'
+        },
+        xAxis: [{
+          labels: {
+            enabled: false
+          },
+          categories: [<%= controller[:actions].map { |name, acion| "'" + name + "'" }.join(', ') %>],
+        }],
+        yAxis: [{ // Primary yAxis
+            labels: {
+                style: {
+                    color: Highcharts.getOptions().colors[1]
+                }
+            },
+            title: {
+                text: 'Variables per action',
+                style: {
+                    color: Highcharts.getOptions().colors[1]
+                }
+            }
+        }],
+        tooltip: {
+            shared: true
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'left',
+            x: 50,
+            verticalAlign: 'top',
+            y: 50,
+            floating: true,
+            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+        },
+        series: [{
+            name: 'Variables',
+            type: 'column',
+            data:[<%= controller[:actions].map { |name, action| action[:vars].count}.join(', ') %>]
+        }
+        // , {
+        //     name: 'Actions',
+        //     type: 'spline',
+        //     data:[<%= DestroyAllViewAssigns::DataPresenter.new.controllers.map { |controller| controller[:actions].count }.join(', ') %>]
+        // }
+        ]
+    });
+});
+
+
+
+
+</script>
+
+<div class="panel panel-default">
+  <!-- Default panel contents -->
+  <div class="panel-heading">List of <strong>#actions</strong> sorted by instance variable count from highest to lowest</div>
+
+  <!-- Table -->
+  <table class="table">
+    <tr>
+      <th>Action</th>
+      <th>Instance Variables count</th>
+      </td>
+      <% controller[:actions].sort_by{|name, data| -data[:vars].count }.each do |name, data| %>
+        <tr>
+          <td ><span style="color:gray;"><%= controller[:klass] %></span>#<strong><%= name %><strong></td>
+          <td><%= data[:vars].count %></td>
+          </td>
+        <% end%>
+  </table>
+</div>
